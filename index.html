@@ -1,0 +1,120 @@
+<html>
+
+<head>
+  <title>Phising_Catcher.js</title>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <script src="certstream.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css" />
+</head>
+
+<body>
+  <div id="main">
+
+  </div>
+
+</body>
+<script>
+  var suspicious_keywords = [
+    'login',
+    'log-in',
+    'account',
+    'verification',
+    'verify',
+    'support',
+    'activity',
+    'security',
+    'update',
+    'authentication',
+    'authenticate',
+    'wallet',
+    'alert',
+    'purchase',
+    'transaction',
+    'recover',
+    'live',
+    'office'
+  ]
+
+  var highly_suspicious = [
+    'paypal',
+    'paypol',
+    'poypal',
+    'twitter',
+    'appleid',
+    'gmail',
+    'outlook',
+    'protonmail',
+    'amazon',
+    'facebook',
+    'microsoft',
+    'windows',
+    'cgi-bin',
+    'localbitcoin',
+    'icloud',
+    'iforgot',
+    'isupport',
+    'kraken',
+    'bitstamp',
+    'bittrex',
+    'blockchain',
+    '.com-',
+    '-com.',
+    '.net-',
+    '.org-',
+    '.gov-',
+    '.gouv-',
+    '-gouv-'
+  ]
+
+  var suspicious_tld = [
+    '.ga',
+    '.gq',
+    '.ml',
+    '.cf',
+    '.tk',
+    '.xyz',
+    '.pw',
+    '.cc',
+    '.club',
+    '.work',
+    '.top',
+    '.support',
+    '.bank',
+    '.info',
+    '.study',
+    '.party',
+    '.click',
+    '.country',
+    '.stream',
+    '.gdn',
+    '.mom',
+    '.xin',
+    '.kim',
+    '.men',
+    '.loan',
+    '.download',
+    '.racing',
+    '.online',
+    '.ren',
+    '.gb',
+    '.win',
+    '.review',
+    '.vip',
+    '.party',
+    '.tech',
+    '.science'
+  ]
+
+  let client = new CertStream.default(function(message) {
+    var data = JSON.parse(message.data.toString());
+
+    if (data.type === 'certificate_update') {
+      console.log(data)
+    }
+  });
+
+  client.connect();
+</script>
+
+</html>

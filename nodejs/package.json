@@ -1,0 +1,15 @@
+{
+  "name": "phishing_catcher.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DeadPackets",
+  "license": "MIT",
+  "dependencies": {
+    "certstream": "^1.1.0",
+    "chalk": "^2.3.0"
+  }
+}
