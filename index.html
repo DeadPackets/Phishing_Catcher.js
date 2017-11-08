@@ -3,7 +3,7 @@
 <head>
   <title>Phising_Catcher.js</title>
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="certstream.min.js"></script>
+  <script src="js/certstream.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css" />
 </head>
@@ -15,6 +15,46 @@
 
 </body>
 <script>
+  // entropy.js MIT License © 2014 James Abney http://github.com/jabney
+
+  // Calculate the Shannon entropy of a string in bits per symbol.
+  (function(shannon) {
+    'use strict';
+
+    // Create a dictionary of character frequencies and iterate over it.
+    function process(s, evaluator) {
+      var h = Object.create(null),
+        k;
+      s.split('').forEach(function(c) {
+        h[c] && h[c]++ || (h[c] = 1);
+      });
+      if (evaluator)
+        for (k in h) evaluator(k, h[k]);
+      return h;
+    };
+
+    // Measure the entropy of a string in bits per symbol.
+    shannon.entropy = function(s) {
+      var sum = 0,
+        len = s.length;
+      process(s, function(k, f) {
+        var p = f / len;
+        sum -= p * Math.log(p) / Math.log(2);
+      });
+      return sum;
+    };
+
+    // Measure the entropy of a string in total bits.
+    shannon.bits = function(s) {
+      return shannon.entropy(s) * s.length;
+    };
+
+    // Log the entropy of a string to the console.
+    shannon.log = function(s) {
+      console.log('Entropy of "' + s + '" in bits per symbol:', shannon.entropy(s));
+    };
+  })(window.shannon = window.shannon || Object.create(null));
+
   var suspicious_keywords = [
     'login',
     'log-in',
@@ -41,6 +81,11 @@
     'paypol',
     'poypal',
     'twitter',
+    'tumblr',
+    'reddit',
+    'protonmail',
+    'youtube',
+    'whatsapp',
     'appleid',
     'gmail',
     'outlook',
@@ -48,6 +93,12 @@
     'amazon',
     'facebook',
     'microsoft',
+    'google',
+    'azure',
+    'aws',
+    'discord',
+    'telegram',
+    'oracle',
     'windows',
     'cgi-bin',
     'localbitcoin',
@@ -107,10 +158,44 @@
   ]
 
   let client = new CertStream.default(function(message) {
-    var data = JSON.parse(message.data.toString());
+    let data = JSON.parse(message.data.toString());
 
-    if (data.type === 'certificate_update') {
-      console.log(data)
+    if (data.message_type === 'certificate_update') {
+
+      data.data.leaf_cert.all_domains.forEach(function(item, i) {
+
+        let score = 0;
+
+        suspicious_tld.forEach(function(tld, i) {
+          if (item.endsWith(tld)) {
+            score = score + 20;
+          }
+        })
+
+        suspicious_keywords.forEach(function(keyword, i) {
+          if (item.includes(keyword)) {
+            score = score + 20
+          }
+        })
+
+        highly_suspicious.forEach(function(suspicious, i) {
+          if (item.includes(suspicious)) {
+            score = score + 60
+          }
+        })
+
+        if (item.indexOf('xn--') < 0 && (item.split('-').length - 1) > 3) {
+          score = score + 20
+        }
+
+        if (score > 75) {
+          console.log('Suspicious!', item, score)
+        } else if (score > 65) {
+          console.log('Potential!', item, score)
+        }
+
+      })
+      //console.log(data)
     }
   });
 
