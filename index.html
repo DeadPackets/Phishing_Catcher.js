@@ -2,10 +2,10 @@
 
 <head>
   <title>Phising_Catcher.js</title>
-  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script> -->
   <script src="js/certstream.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css" />
+  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.0/css/bulma.min.css" /> -->
 </head>
 
 <body>
@@ -158,8 +158,7 @@
   ]
 
   let client = new CertStream.default(function(message) {
-    let data = JSON.parse(message.data.toString());
-
+    let data = JSON.parse(message.data);
     if (data.message_type === 'certificate_update') {
 
       data.data.leaf_cert.all_domains.forEach(function(item, i) {
@@ -195,7 +194,8 @@
         }
 
       })
-      //console.log(data)
+
+      //console.log(data.data.leaf_cert.all_domains)
     }
   });
 
